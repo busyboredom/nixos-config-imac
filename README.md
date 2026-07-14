@@ -4,5 +4,5 @@ Declarative NixOS configuration for a 2013 iMac running the COSMIC desktop envir
 
 ## Documentation
 
-- [Installation & Testing](InstallationAndTesting.md) — VM validation and bare-metal deployment
-- [Operations & Maintenance](OperationsAndMaintenance.md) — day-to-day usage (Flatpak, backups, passwords)
+- [Installation & Testing](docs/InstallationAndTesting.md) — VM validation and bare-metal deployment
+- [Operations & Maintenance](docs/OperationsAndMaintenance.md) — day-to-day usage (Flatpak, backups, passwords)
