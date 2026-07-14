@@ -1,0 +1,9 @@
+keys:
+  - &charlie_laptop age1rkqemt2zv5tfw8g5ld26uksgw2z5hxjulyy9f7cmnas67as845rq9n0lxt
+  # - &imac GENERATED_KEY_PLACEHOLDER
+creation_rules:
+  - path_regex: secrets/[^/]+\.yaml$
+    key_groups:
+      - age:
+          - *charlie_laptop
+          # - *imac
