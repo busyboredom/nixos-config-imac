@@ -92,7 +92,7 @@ This key will be used to encrypt and decrypt your system secrets.
 
 ```bash
 sudo mkdir -p /var/lib/sops-nix
-sudo nix-shell -p age --run "age-keygen -o /var/lib/sops-nix/key.txt"
+sudo nix-shell -p rage --run "rage-keygen -o /var/lib/sops-nix/key.txt"
 ```
 
 Copy the generated Public Key output — you will need it in the next step.

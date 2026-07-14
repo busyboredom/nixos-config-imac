@@ -1,5 +1,6 @@
 { pkgs, ... }: {
   environment.systemPackages = with pkgs; [
-    vlc
+    vlc         # media player
+    rage        # age-compatible file encryption (sops-nix secret management)
   ];
 }
