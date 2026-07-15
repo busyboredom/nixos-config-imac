@@ -8,7 +8,8 @@
       efi.canTouchEfiVariables = true;
     };
 
-    initrd.kernelModules = [ "applesmc" "applespi" "intel_lpss_pci" "spi_pxa2xx_platform" "kvm-intel" ];
+    initrd.kernelModules = [ "applesmc" "applespi" "intel_lpss_pci" "spi_pxa2xx_platform" "kvm-intel" "dm_crypt" ];
+    initrd.availableKernelModules = [ "aesni_intel" "cryptd" ];
 
     # The BCM4360 chipset lacks functional open-source firmware; these modules ensure the proprietary Broadcom STA driver binds successfully by preventing conflicts
     extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];

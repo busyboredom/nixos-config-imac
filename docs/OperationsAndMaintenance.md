@@ -121,6 +121,28 @@ nix-shell -p sops --run "sops secrets/secrets.yaml"
 
 Update the password field, save, and exit. Rebuild the system to apply the new secret.
 
+### LUKS Disk Encryption Passphrase
+
+The root partition is LUKS-encrypted. You are prompted for this passphrase every time the iMac boots.
+
+Back up the LUKS header before making any changes — if it is corrupted, all data on the partition is lost:
+
+```bash
+sudo cryptsetup luksHeaderBackup /dev/sda2 --header-backup-file /path/to/backup/header-backup.img
+```
+
+To change the passphrase:
+
+```bash
+sudo cryptsetup luksChangeKey /dev/sda2
+```
+
+Enter the current passphrase, then the new one. To add a backup passphrase to a second LUKS slot:
+
+```bash
+sudo cryptsetup luksAddKey /dev/sda2
+```
+
 ## 5. System Architecture Overview (For Tinkering)
 
 - **NixOS & Flakes:** The entire system state (excluding `/home`) is derived deterministically from the `flake.nix` in your configuration repository. If you break the system, you can reboot into the previous generation via the bootloader.
@@ -129,6 +151,6 @@ Update the password field, save, and exit. Rebuild the system to apply the new s
 
 - **Modular Configuration:** The system configuration is split into single-responsibility files under `programs/` and `services/`, all imported by `configuration.nix`. This keeps each concern isolated and easy to modify.
 
-- **Disko & BTRFS:** The disk is partitioned using Disko, utilizing BTRFS subvolumes. Because `/nix` and `/home` are separate subvolumes from `/`, you have the infrastructure to implement stateless root filesystems (Impermanence) in the future if desired.
+- **Disko, LUKS & BTRFS:** The disk is partitioned using Disko with LUKS encryption on the root partition. BTRFS subvolumes (`@root`, `@home`, `@nix`) sit inside the encrypted container. Because `/nix` and `/home` are separate subvolumes from `/`, you have the infrastructure to implement stateless root filesystems (Impermanence) in the future if desired.
 
-- **Hardware Abstractions:** The Broadcom Wi-Fi and NVIDIA Kepler GPUs require legacy proprietary drivers. If this configuration is ported to a modern machine, the specific `hardware.nvidia` and `boot.extraModulePackages` blocks must be removed to prevent kernel panics.
+- **Hardware Abstractions:** The Broadcom Wi-Fi requires proprietary drivers, and the NVIDIA Kepler GPU uses the open-source Nouveau driver (required for Wayland/COSMIC support). If this configuration is ported to a modern machine, the specific `boot.extraModulePackages` and `boot.extraModprobeConfig` blocks must be removed.

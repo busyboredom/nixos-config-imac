@@ -129,6 +129,8 @@ Verify the physical disk identifier (`lsblk`, usually `/dev/sda` on this iMac) m
 sudo disko --mode disko /etc/nixos/disko.nix
 ```
 
+You will be prompted to set a LUKS passphrase. This passphrase is required every time the iMac boots — choose something you can type comfortably on a wired keyboard at startup.
+
 ### 5. Stage Decryption Keys
 
 Copy the generated rage key to the newly formatted root partition so the system can decrypt secrets on its first boot.

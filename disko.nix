@@ -17,23 +17,28 @@
                 mountpoint = "/boot";
               };
             };
-            root = {
+            luks = {
               size = "100%";
               content = {
-                type = "btrfs";
-                # Segregating state, user data, and the immutable store into subvolumes enables independent rollback strategies and prevents store corruption during home directory restorations
-                subvolumes = {
-                  "/@root" = {
-                    mountpoint = "/";
-                    mountOptions = [ "compress=zstd" "noatime" "autodefrag" ];
-                  };
-                  "/@home" = {
-                    mountpoint = "/home";
-                    mountOptions = [ "compress=zstd" "noatime" "autodefrag" ];
-                  };
-                  "/@nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [ "compress=zstd" "noatime" ];
+                type = "luks";
+                name = "cryptroot";
+                content = {
+                  type = "btrfs";
+                  extraArgs = [ "-f" ];
+                  # Segregating state, user data, and the immutable store into subvolumes enables independent rollback strategies and prevents store corruption during home directory restorations
+                  subvolumes = {
+                    "/@root" = {
+                      mountpoint = "/";
+                      mountOptions = [ "compress=zstd" "noatime" "autodefrag" ];
+                    };
+                    "/@home" = {
+                      mountpoint = "/home";
+                      mountOptions = [ "compress=zstd" "noatime" "autodefrag" ];
+                    };
+                    "/@nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    };
                   };
                 };
               };

@@ -31,7 +31,7 @@
   hardware.enableAllFirmware = true;
 
   environment.systemPackages = with pkgs; [
-    disko git vim rage sops ssh-to-age pciutils usbutils
+    disko git vim rage sops ssh-to-age pciutils usbutils cryptsetup
   ];
 
   nixpkgs.config.allowUnfree = true;
