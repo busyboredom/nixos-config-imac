@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -15,17 +15,19 @@
   ];
 
   nixpkgs.config.allowUnfree = true;
+  # broadcom-sta is flagged insecure (CVE-2019-9501, CVE-2019-9502) but is the only driver that supports the BCM4360
+  nixpkgs.config.allowInsecurePredicate = pkg:
+    builtins.elem (lib.getName pkg) [ "broadcom-sta" ];
 
   hardware.bluetooth.enable = true;
 
   hardware.graphics.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia = {
-    open = false;
-    modesetting.enable = true;
-    # The GTX 700M series (Kepler architecture) was dropped from mainline NVIDIA drivers; 470 is the last supported branch that provides hardware acceleration for this specific iMac
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
-  };
+  services.xserver.videoDrivers = lib.mkForce [ "modesetting" ];
+  # nouveau is the only driver that supports Wayland (required by COSMIC) on this Kepler GPU; NvClkMode=15 forces pstate 0f (max performance) at boot
+  boot.extraModprobeConfig = ''
+    options nouveau config=NvClkMode=15
+    options btusb enable_autosuspend=0
+  '';
 
   # Xbox One / Series X|S wireless + wired controllers (via Xbox Wireless Adapter); Xbox 360 coexistence via xpad-noone
   hardware.xone.enable = true;
@@ -47,7 +49,7 @@
     cosmic-player
   ];
 
-  system.stateVersion = "26.05";
+  system.stateVersion = "26.11";
 
   # Compressed swap in RAM — fast and invisible; disk swap is too slow on a spinning HDD to be useful
   zramSwap = {
@@ -66,7 +68,6 @@
 
   # Isolates hardware-specific configurations from the ephemeral QEMU test environment to prevent driver initialization failures during `nix build ...vm`
   virtualisation.vmVariant = {
-    services.xserver.videoDrivers = lib.mkForce [ "modesetting" ];
     boot.extraModulePackages = lib.mkForce [ ];
     boot.kernelModules = lib.mkForce [ ];
     boot.blacklistedKernelModules = lib.mkForce [ ];

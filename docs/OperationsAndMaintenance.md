@@ -36,7 +36,7 @@ The system automatically backs up `/home` daily. Steam game installations (`stea
 ### List Snapshots
 
 ```bash
-sudo restic -r /mnt/backup-drive/restic-repo -p /run/secrets/restic/password snapshots
+sudo restic -r /var/lib/restic/backups -p /run/secrets/restic/password snapshots
 ```
 
 ### Restore from a Snapshot
@@ -46,7 +46,7 @@ sudo restic -r /mnt/backup-drive/restic-repo -p /run/secrets/restic/password sna
 2. Restore data to a specific location:
 
 ```bash
-sudo restic -r /mnt/backup-drive/restic-repo -p /run/secrets/restic/password restore a1b2c3d4 --target /tmp/restore_dir
+sudo restic -r /var/lib/restic/backups -p /run/secrets/restic/password restore a1b2c3d4 --target /tmp/restore_dir
 ```
 
 > It is recommended to restore to a temporary directory first, then manually move the required files back into `/home`, rather than overwriting the live directory directly.
@@ -64,13 +64,13 @@ sudo systemctl start restic-backup-daily-home
 To remove a specific snapshot and reclaim space:
 
 ```bash
-sudo restic -r /mnt/backup-drive/restic-repo -p /run/secrets/restic/password forget <snapshot-id> --prune
+sudo restic -r /var/lib/restic/backups -p /run/secrets/restic/password forget <snapshot-id> --prune
 ```
 
 ### View Repository Size
 
 ```bash
-sudo restic -r /mnt/backup-drive/restic-repo -p /run/secrets/restic/password stats
+sudo restic -r /var/lib/restic/backups -p /run/secrets/restic/password stats
 ```
 
 ### Adding New Exclusions
@@ -82,7 +82,7 @@ To exclude additional directories from future backups, edit `services/restic.nix
 One external drive isn't enough if the iMac and the drive are in the same location (fire, theft, drive failure). To copy backups to a second drive stored elsewhere:
 
 ```bash
-rsync -av /mnt/backup-drive/restic-repo/ /mnt/second-drive/restic-repo/
+rsync -av /var/lib/restic/backups/ /mnt/second-drive/restic-repo/
 ```
 
 ### Manual
@@ -106,7 +106,7 @@ Changing the repository password requires updating both the physical restic repo
 1. Change the password on the repository:
 
 ```bash
-sudo restic -r /mnt/backup-drive/restic-repo -p /run/secrets/restic/password key add
+sudo restic -r /var/lib/restic/backups -p /run/secrets/restic/password key add
 ```
 
 Follow prompts to add new password, then optionally remove the old key.

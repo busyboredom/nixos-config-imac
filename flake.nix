@@ -20,7 +20,7 @@
       sops-nix,
       nix-flatpak,
       ...
-    }:
+    }@inputs:
     {
       nixosConfigurations.imac = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -29,6 +29,18 @@
           sops-nix.nixosModules.sops
           nix-flatpak.nixosModules.nix-flatpak
           ./configuration.nix
+        ];
+      };
+
+      nixosConfigurations.imacIso = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit (inputs) self; };
+        modules = [
+          "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+          disko.nixosModules.disko
+          nix-flatpak.nixosModules.nix-flatpak
+          ./configuration.nix
+          ./imac-iso.nix
         ];
       };
     };

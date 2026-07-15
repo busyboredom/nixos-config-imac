@@ -3,9 +3,10 @@
 {
   services.restic.backups = {
     daily-home = {
-      repository = "/mnt/backup-drive/restic-repo";
+      repository = "/var/lib/restic/backups";
       # Sops-nix manages permissions and creates a symlink in the run directory to prevent the raw string from leaking into the Nix store
       passwordFile = config.sops.secrets."restic/password".path;
+      initialize = true;
       paths = [ "/home" ];
       timerConfig = {
         OnCalendar = "daily";
