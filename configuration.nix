@@ -8,6 +8,7 @@
     ./programs/flatpak.nix
     ./programs/programs.nix
     ./services/sops.nix
+    ./services/ssh.nix
     ./services/restic.nix
     ./services/nix.nix
     ./services/printing.nix
